@@ -4,5 +4,17 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Book(
-    val kind: String,
+    val kind: String = "kind",
+    val id: String = "id",
+    val etag: String = "etag",
+    val selfLink: String = "selfLink",
+    val volumeInfo: VolumeInfo = VolumeInfo()
+)
+
+@Serializable
+data class VolumeInfo(
+    val title: String = "title",
+    val author: String = "author",
+    val publisher: String = "publisher",
+    val publishYear: Int = 2000
 )

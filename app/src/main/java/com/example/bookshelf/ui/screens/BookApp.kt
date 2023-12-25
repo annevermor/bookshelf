@@ -5,6 +5,7 @@ import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,6 +29,7 @@ import com.example.bookshelf.R
 import com.example.bookshelf.model.BookUiState
 import com.example.bookshelf.model.BookViewModel
 import com.example.bookshelf.network.Book
+
 
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -66,7 +68,10 @@ fun BookCard(book: Book) {
         modifier = Modifier
             .padding(8.dp)
     ) {
-        Column {
+        Column (
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
                     .data("TODO")
@@ -76,11 +81,15 @@ fun BookCard(book: Book) {
                 placeholder = painterResource(R.drawable.loading),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = book.kind,
+                text = book.volumeInfo.title,
                 modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = book.volumeInfo.author,
+                modifier = Modifier.padding(top = 0.dp, bottom = 8.dp, start = 8.dp, end = 8.dp)
             )
         }
     }
