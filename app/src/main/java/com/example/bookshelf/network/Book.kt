@@ -3,6 +3,13 @@ package com.example.bookshelf.network
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class Books(
+    val kind: String,
+    val totalItems: Int,
+    val items: List<Book>
+)
+
+@Serializable
 data class Book(
     val kind: String = "kind",
     val id: String = "id",

@@ -53,7 +53,7 @@ fun SuccessScreen(books: List<Book>) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2)
     ) {
-        items(items = books, key = { book -> book.kind }) { book ->
+        items(items = books, key = { book -> book.id }) { book ->
             BookCard(book = book)
         }
     }

@@ -37,7 +37,7 @@ class BookViewModel(private val bookRepository: BookRepository) : ViewModel() {
     fun getBooks() {
         viewModelScope.launch {
             bookUiState = try {
-                BookUiState.Success(bookRepository.getBooks())
+                BookUiState.Success(bookRepository.getBooks().items)
             } catch (e: IOException) {
                 BookUiState.Error
             } catch (e: HttpException) {
