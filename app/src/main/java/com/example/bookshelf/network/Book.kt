@@ -21,7 +21,14 @@ data class Book(
 @Serializable
 data class VolumeInfo(
     val title: String = "title",
-    val author: String = "author",
+    val authors: List<String> = listOf("author"),
     val publisher: String = "publisher",
-    val publishYear: Int = 2000
+    val publishYear: Int = 2000,
+    val imageLinks: Cover = Cover()
+)
+
+@Serializable
+data class Cover(
+    val smallThumbnail: String = "http://books.google.com/books/content?id=JyW2DwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+    val thumbnail: String = "http://books.google.com/books/content?id=JyW2DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
 )
