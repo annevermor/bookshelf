@@ -2,8 +2,11 @@ package com.example.bookshelf.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.bookshelf.R
@@ -33,42 +39,60 @@ import com.example.bookshelf.model.BookUiState
 import com.example.bookshelf.model.BookViewModel
 import com.example.bookshelf.network.Book
 
+enum class Screen{
+    List,
+    Desc
+}
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun BookApp() {
     val bookViewModel: BookViewModel = viewModel(factory = BookViewModel.Factory)
-    //val mockData = List(100) { Book(kind = it.toString()) }
-    BookScreen(uiState = bookViewModel.bookUiState)
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = Screen.List.name) {
+        composable(route = Screen.List.name) {
+            BookScreen(
+                uiState = bookViewModel.bookUiState,
+                onCardClicked = {navController.navigate(route = Screen.Desc.name)}
+            )
+        }
+        composable(route = Screen.Desc.name) {
+            BookDesc(book = TODO())
+        }
+    }
+    //BookScreen(uiState = bookViewModel.bookUiState)
 }
 
 @Composable
-fun BookScreen(uiState: BookUiState) {
-    when (uiState) {
+fun BookScreen(uiState: BookUiState, onCardClicked: () -> Unit) { when (uiState) {
         is BookUiState.Loading -> LoadingScreen()
-        is BookUiState.Success -> SuccessScreen(books = uiState.books)
+        is BookUiState.Success -> SuccessScreen(books = uiState.books, onCardClicked = onCardClicked)
         is BookUiState.Error -> ErrorScreen()
     }
 }
 
 @Composable
-fun SuccessScreen(books: List<Book>) {
+fun SuccessScreen(books: List<Book>, onCardClicked: () -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2)
     ) {
         items(items = books, key = { book -> book.id }) { book ->
-            BookCard(book = book)
+            BookCard(book = book, onCardClicked = onCardClicked)
         }
     }
 }
 
-
 @Composable
-fun BookCard(book: Book) {
+fun BookCard(
+    book: Book,
+    onCardClicked: () -> Unit
+) {
     Card(
         elevation = CardDefaults.cardElevation(8.dp),
         modifier = Modifier
             .padding(8.dp)
+            .clickable { onCardClicked() }
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -76,7 +100,11 @@ fun BookCard(book: Book) {
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context = LocalContext.current)
-                    .data(book.volumeInfo.imageLinks.thumbnail.replace("http", "https"))
+                    .data(
+                        book.volumeInfo.imageLinks.thumbnail.replace(
+                            "http", "https"
+                        )
+                    )
                     .crossfade(true)
                     .build(),
                 error = painterResource(R.drawable.baseline_error_24),
@@ -145,12 +173,49 @@ fun ErrorScreen() {
     }
 }
 
+@Composable
+fun BookDesc(book: Book) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()) {
+        AsyncImage(
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(book.volumeInfo.imageLinks.thumbnail.replace("http", "https"))
+                .crossfade(true)
+                .build(),
+            error = painterResource(R.drawable.baseline_error_24),
+            placeholder = painterResource(R.drawable.download),
+            contentScale = ContentScale.Crop,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize(0.8f)
+                .padding(8.dp)
+        )
+        Text(text = book.volumeInfo.title)
+        Row {
+            book.volumeInfo.authors.forEach { author->
+                Text(text = author, modifier = Modifier.padding(8.dp))
+            }
+        }
+        Text(text = book.volumeInfo.description)
+        Text(text = book.volumeInfo.publisher)
+        Text(text = book.volumeInfo.publishYear.toString() + " year")
+    }
+}
+
+val mockData = List(100) { Book(id = it.toString()) }
+
 @Preview(
     showBackground = true,
     showSystemUi = true
 )
 @Composable
-fun BookScreenPreview() {
-    val mockData = List(100) { Book(kind = it.toString()) }
-    SuccessScreen(books = mockData)
-}
+fun BookScreenPreview() { SuccessScreen(books = mockData, onCardClicked = {}) }
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun BookDescPreview() { BookDesc(book = mockData[0]) }

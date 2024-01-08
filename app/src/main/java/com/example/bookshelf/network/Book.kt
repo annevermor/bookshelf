@@ -12,18 +12,19 @@ data class Books(
 @Serializable
 data class Book(
     val kind: String = "kind",
-    val id: String = "id",
-    val etag: String = "etag",
+    val id: String = "023843",
+    val etag: String = "JHKSdfie",
     val selfLink: String = "selfLink",
     val volumeInfo: VolumeInfo = VolumeInfo()
 )
 
 @Serializable
 data class VolumeInfo(
-    val title: String = "title",
-    val authors: List<String> = listOf("author"),
-    val publisher: String = "publisher",
-    val publishYear: Int = 2000,
+    val title: String = "Great adventure",
+    val authors: List<String> = listOf("Anton Novikov", "Daria Budarina"),
+    val publisher: String = "AFB House",
+    val publishYear: Int = 2023,
+    val description: String = "description placeholder",
     val imageLinks: Cover = Cover()
 )
 

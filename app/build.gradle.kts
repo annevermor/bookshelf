@@ -63,7 +63,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     //kotlin serialization implementation require to add id in plugins{}
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-
+    //compose navigation
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
